@@ -12,6 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Webapi.Data;
+using Webapi.Repository;
+using Webapi.Repository.Interfaces;
 
 namespace Webapi
 {
@@ -30,6 +32,8 @@ namespace Webapi
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddDbContext<Context>(options => options.UseSqlServer(Configuration.GetConnectionString("DbConnection")));
+
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
