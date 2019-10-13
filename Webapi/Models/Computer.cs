@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using Access.Models;
 
 namespace Webapi.Models
 {
-    public class Computer
+    public class Computer : BaseEntity
     {
         public string Name { get; set; }
         public string Ip { get; set; }
