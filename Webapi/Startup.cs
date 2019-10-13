@@ -11,7 +11,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Webapi.Business;
 using Webapi.Data;
+using Webapi.Interfaces.Business;
+using Webapi.Models;
 using Webapi.Repository;
 using Webapi.Repository.Interfaces;
 
@@ -34,6 +37,10 @@ namespace Webapi
             services.AddDbContext<Context>(options => options.UseSqlServer(Configuration.GetConnectionString("DbConnection")));
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+            services.AddScoped<IBusiness<Computer>, ComputerBusiness>();
+            services.AddScoped<IBusiness<User>, UserBusiness>();
+            services.AddScoped<IBusiness<Scheduling>, SchedulingBusiness>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

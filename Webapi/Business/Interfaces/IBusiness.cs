@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Access.Models;
 
-namespace Webapi.Repository.Interfaces
+namespace Webapi.Interfaces.Business
 {
-    public interface IRepository<TEntity> where TEntity : BaseEntity
+    public interface IBusiness<TEntity> where TEntity : class
     {
         Task<List<TEntity>> FindAllAsync();
         Task<TEntity> FindByIdAsync(int id);
