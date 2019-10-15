@@ -3,8 +3,9 @@ using Access.Models;
 
 namespace Webapi.Models
 {
-    public class User : BaseEntity
+    public class User
     {
+        public int Id { get; set; }
         public string Login { get; set; }
         public string Senha { get; set; }
         public List<Computer> Computers { get; set; }

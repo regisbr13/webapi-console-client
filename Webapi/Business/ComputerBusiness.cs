@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Webapi.Interfaces.Business;
 using Webapi.Models;
 using Webapi.Repository.Interfaces;
@@ -8,40 +9,44 @@ namespace Webapi.Business
 {
     public class ComputerBusiness : IBusiness<Computer>
     {
-        private readonly IRepository<Computer> _repository;
+        private readonly IComputerRepository _computerRepository;
 
-        public ComputerBusiness(IRepository<Computer> repository)
+        public ComputerBusiness(IComputerRepository repository)
         {
-            _repository = repository;
+            _computerRepository = repository;
         }
         public async Task<bool> ExistsAsync(Computer entity)
         {
-            return await _repository.ExistsAsync(entity);
+            return await _computerRepository.ExistsAsync(entity);
         }
 
         public async Task<List<Computer>> FindAllAsync()
         {
-            return await _repository.FindAllAsync();
+            return await _computerRepository.FindAllAsync();
         }
 
         public async Task<Computer> FindByIdAsync(int id)
         {
-            return await _repository.FindByIdAsync(id);
+            return await _computerRepository.FindByIdAsync(id);
         }
 
         public async Task<Computer> InsertAsync(Computer entity)
         {
-            return await _repository.InsertAsync(entity);
+            var computerBase = await _computerRepository.FindUserByName(entity.Name);
+            if(computerBase != null) {
+                return new Computer { Id = computerBase.Id};
+            }
+            return await _computerRepository.InsertAsync(entity);
         }
 
         public async Task RemoveAsync(int id)
         {
-            await _repository.RemoveAsync(id);
+            await _computerRepository.RemoveAsync(id);
         }
 
         public async Task<Computer> UpdateAsync(Computer entity)
         {
-            return await _repository.UpdateAsync(entity);
+            return await _computerRepository.UpdateAsync(entity);
         }
     }
 }

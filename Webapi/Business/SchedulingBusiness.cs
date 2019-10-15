@@ -25,6 +25,11 @@ namespace Webapi.Business
             return await _repository.FindAllAsync();
         }
 
+        public async Task<List<Scheduling>> FindAllAsync(int computerId)
+        {
+            return (await _repository.FindAllAsync()).Where(x => x.ComputerId == computerId && string.IsNullOrEmpty(x.Response)).ToList();
+        }
+
         public async Task<List<Scheduling>> FindAllNotExecutedAsync()
         {
             var list = await _repository.FindAllAsync();
