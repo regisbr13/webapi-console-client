@@ -1,0 +1,60 @@
+<app-title [title]="title"></app-title>
+<table class="table table-striped table-hover">
+  <thead class="thead-dark">
+    <tr>
+      <th>Comando</th>
+      <th>Data agendada</th>
+      <th colspan="2" class="text-center">Opções</th>
+    </tr>
+  </thead>
+  <tbody *ngIf="schedulings">
+    <tr *ngFor="let scheduling of schedulings">
+      <td>{{scheduling.comand}}</td>
+      <td>{{scheduling.schedulingDate | date: 'd/MM/yyyy HH:mm'}}</td>
+      <td>
+        <div class="btn-group">
+            <button class="btn btn-sm btn-outline-info" tooltip="Deletar agendamento" (click)="deleteScheduling(delete, scheduling)"><i class="fas fa-trash-alt"></i></button>
+        </div>
+      </td>
+    </tr>
+    <tr>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr *ngIf="schedulings.length == 0">
+      <td colspan=8>
+        <h3 class="text-info text-center">
+          Nenhum comando agendado.
+        </h3>
+      </td>
+    </tr>
+  </tfoot>
+</table>
+
+<div bsModal #delete="bs-modal" class="modal fade" tabindex="-1"
+role="dialog" aria-labelledby="dialog-sizes-name1">
+<div class="modal-dialog modal-sm">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4 id="dialog-sizes-name1" class="modal-title pull-left">Excluir Agendamento</h4>
+      <button type="button" class="close pull-right" (click)="delete.hide()" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group col-md-12">
+          <p>{{confirm}}</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-sm btn-outline-primary" (click)="delete.hide()">
+          Cancelar
+        </button>
+        <button class="btn btn-sm btn-outline-danger" (click)="deleteConfirm(delete)">
+          Excluir
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

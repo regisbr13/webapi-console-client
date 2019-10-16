@@ -39,7 +39,7 @@ namespace Webapi.Controllers
         public async Task<IActionResult> Post([FromBody] Computer obj)
         {
             if(obj == null) return BadRequest();
-            obj.Ip = Request.HttpContext.Connection.LocalIpAddress.ToString();
+            obj.Ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
             var computer = await _business.InsertAsync(obj);
             return Ok(computer.Id);
         }

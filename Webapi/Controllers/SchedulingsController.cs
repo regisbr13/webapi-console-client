@@ -9,7 +9,7 @@ using Webapi.Models;
 
 namespace Webapi.Controllers
 {
-    [Route("api/")]
+    [Route("api/schedulings/")]
     [ApiController]
     public class SchedulingsController : Controller
     {
@@ -19,31 +19,29 @@ namespace Webapi.Controllers
             _business = business;
         }
 
-        [HttpGet("schedulings/{computerId}")]
+        [HttpGet("{computerId}")]
         [SwaggerResponse(200, Type = typeof(List<Scheduling>))]
         [SwaggerResponse(204)]
         [SwaggerResponse(400)]
         [SwaggerResponse(401)]
-        [HttpGet]
         public async Task<ActionResult> Get(int computerId)
         {
-            var obj = await _business.FindAllAsync(computerId);
-            return Ok(obj);
+            var schedulings = await _business.FindAllAsync(computerId);
+            return Ok(schedulings);
         }
 
-        [HttpGet("schedulings/getbyid/{id}")]
+        [HttpGet("getbyid/{id}")]
         [SwaggerResponse(200, Type = typeof(Scheduling))]
         [SwaggerResponse(204)]
         [SwaggerResponse(404)]
         [SwaggerResponse(401)]
-        [HttpGet]
         public async Task<ActionResult> GetById(int id)
         {
             var obj = await _business.FindByIdAsync(id);
             return Ok(obj);
         }
 
-        [HttpPost("schedulings/")]
+        [HttpPost]
         [SwaggerResponse(201, Type = typeof(Scheduling))]
         [SwaggerResponse(400)]
         [SwaggerResponse(401)]  
@@ -54,7 +52,7 @@ namespace Webapi.Controllers
             return new ObjectResult(await _business.InsertAsync(obj));
         }
 
-        [HttpPut("schedulings/{id}")]
+        [HttpPut("{id}")]
         [SwaggerResponse(202, Type = typeof(Scheduling))]
         [SwaggerResponse(400)]
         [SwaggerResponse(401)] 
@@ -64,6 +62,19 @@ namespace Webapi.Controllers
             var updatedobj = await _business.UpdateAsync(obj);
             if(updatedobj == null) return BadRequest("Scheduling doesn't exist in database");
             return new ObjectResult(await _business.UpdateAsync(obj));
+        }
+
+        [HttpDelete("{id}")]
+        [SwaggerResponse(204)]
+        [SwaggerResponse(400)]
+        [SwaggerResponse(401)]          
+        public async Task<IActionResult> Delete(int id)
+        {
+            var obj = await _business.FindByIdAsync(id);
+            if(obj == null)
+                return NotFound();
+            await _business.RemoveAsync(id);
+            return NoContent();
         }
     }
 }
