@@ -31,6 +31,7 @@ export class ComputersComponent implements OnInit {
   date: Date = new Date();
   dateNow: string = this.date.getFullYear() + '/' + this.date.getMonth() + '/' + this.date.getDate() + " " + this.date.getHours().toLocaleString() + ":" + this.date.getMinutes();
   schedulingDate: string;
+  notification: string;
 
   constructor(private computerService: ComputerService, private schedulingService: SchedulingService, private http: HttpClient, private datepickerConfig: BsDatepickerConfig, private localeService: BsLocaleService, private modalService: BsModalService, private toastr: ToastrService) {
     this.localeService.use('pt-br');
@@ -61,19 +62,25 @@ export class ComputersComponent implements OnInit {
     if(this.schedulingDate) {
       this.scheduling.executionDate = this.schedulingDate;
       this.scheduling.schedulingDate = this.schedulingDate;
+      this.notification = `Comando agendado com sucesso!`;
     } else {
       this.scheduling.executionDate =  this.dateNow;
       this.scheduling.schedulingDate = this.dateNow;
+      this.notification = `Comando executado com sucesso!`;
     }
     this.schedulingService.postScheduling(this.scheduling).subscribe(
       (scheduling: Scheduling) => {
         setTimeout(() => {
             this.schedulingService.getScheduling(scheduling.id).subscribe(
-            (scheduling: Scheduling) => this.response = scheduling.response
+              (scheduling: Scheduling) => {
+                if (scheduling.response) {
+                  this.toastr.success(this.notification)
+                } else {
+                  this.toastr.error('Execute o console no seu computador');
+                }
+              }
           ); 
-          console.log(scheduling.id);
-          }, 1500);
-
+        }, 1500);
       }
     );
   }
