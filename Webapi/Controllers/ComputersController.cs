@@ -19,27 +19,16 @@ namespace Webapi.Controllers
             _business = business;
         }
 
-        [HttpGet]
+        [HttpGet("{userId}")]
         [SwaggerResponse(200, Type = typeof(List<Computer>))]
         [SwaggerResponse(204)]
         [SwaggerResponse(400)]
-        [SwaggerResponse(401)]
-        public async Task<ActionResult> Get()
-        {
-            var obj = await _business.FindAllAsync();
-            return Ok(obj);
-        }
-
-        [HttpGet("{id}")]
-        [SwaggerResponse(200, Type = typeof(Computer))]
-        [SwaggerResponse(204)]
-        [SwaggerResponse(400)]
         [SwaggerResponse(401)]        
-        public async Task<ActionResult> Get(int id)
+        public async Task<ActionResult> Get(int userId)
         {
-            var obj = await _business.FindByIdAsync(id);
+            var obj = await _business.FindAllAsync(userId);
             if(obj == null)
-                return NotFound();
+                return Ok(new List<Computer>());
             return Ok(obj);
         }
 
@@ -50,6 +39,7 @@ namespace Webapi.Controllers
         public async Task<IActionResult> Post([FromBody] Computer obj)
         {
             if(obj == null) return BadRequest();
+            obj.Ip = Request.HttpContext.Connection.LocalIpAddress.ToString();
             var computer = await _business.InsertAsync(obj);
             return Ok(computer.Id);
         }

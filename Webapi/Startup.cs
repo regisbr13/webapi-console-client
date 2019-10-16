@@ -38,7 +38,7 @@ namespace Webapi
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.AddDbContext<Context>(options => options.UseSqlServer(Configuration.GetConnectionString("DbConnection")));
+            services.AddDbContext<Context>(options => options.UseSqlServer(Configuration.GetConnectionString("ConDb")));
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();		
             services.AddSession();				
@@ -53,41 +53,39 @@ namespace Webapi
             services.AddScoped<LoginBusiness>();
             services.AddScoped<SchedulingBusiness>();
 
-            services.AddSwaggerGen(x => {
-		        x.SwaggerDoc("v1", new Info {Title = "Access WebApi", Version = "v1"});
-	        });
-
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 			.AddCookie(options => {options.LoginPath = "/users/Login";});	
+
+            services.AddSwaggerGen(x => {				
+		    x.SwaggerDoc("v1", new Info {Title = "Access Console Api", Version = "v1"});
+            x.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+	        });
+
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
 
-            	app.UseSwagger(c => 
-                {
-                    c.RouteTemplate = "swagger/{documentName}/swagger.json";
-                });
-                
-                app.UseSwaggerUI(x => {
-                    x.SwaggerEndpoint("/swagger/v1/swagger.json", "My API v1");	
-                });
-                var option = new RewriteOptions();
-                option.AddRedirect("^$", "swagger");					
-                app.UseRewriter(option);
+            app.UseDeveloperExceptionPage();
+
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             app.UseAuthentication();
             app.UseSession(); 
+
+            app.UseSwagger(c => 
+	        {
+		        c.RouteTemplate = "swagger/{documentName}/swagger.json";
+	        });
+
+            app.UseSwaggerUI(x => {
+	        	x.SwaggerEndpoint("/swagger/v1/swagger.json", "My API v1");	
+	        });
+	        var option = new RewriteOptions();
+	        option.AddRedirect("^$", "swagger");				
+	        app.UseRewriter(option);
             app.UseMvc();
         }
     }

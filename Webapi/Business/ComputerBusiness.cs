@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Webapi.Interfaces.Business;
@@ -19,10 +20,16 @@ namespace Webapi.Business
         {
             return await _computerRepository.ExistsAsync(entity);
         }
-
         public async Task<List<Computer>> FindAllAsync()
         {
             return await _computerRepository.FindAllAsync();
+        }
+
+        public async Task<List<Computer>> FindAllAsync(int userId)
+        {
+            var list = (await _computerRepository.FindAllAsync()).Where(x => x.UserId == userId).ToList();
+            if(list == null) return new List<Computer>();
+            return (list);
         }
 
         public async Task<Computer> FindByIdAsync(int id)

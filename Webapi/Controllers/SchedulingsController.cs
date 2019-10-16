@@ -9,9 +9,9 @@ using Webapi.Models;
 
 namespace Webapi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/")]
     [ApiController]
-    public class SchedulingsController : ControllerBase
+    public class SchedulingsController : Controller
     {
          private readonly SchedulingBusiness _business;
 
@@ -19,7 +19,7 @@ namespace Webapi.Controllers
             _business = business;
         }
 
-        [HttpGet("{computerId}")]
+        [HttpGet("schedulings/{computerId}")]
         [SwaggerResponse(200, Type = typeof(List<Scheduling>))]
         [SwaggerResponse(204)]
         [SwaggerResponse(400)]
@@ -31,7 +31,19 @@ namespace Webapi.Controllers
             return Ok(obj);
         }
 
-        [HttpPost]
+        [HttpGet("schedulings/getbyid/{id}")]
+        [SwaggerResponse(200, Type = typeof(Scheduling))]
+        [SwaggerResponse(204)]
+        [SwaggerResponse(404)]
+        [SwaggerResponse(401)]
+        [HttpGet]
+        public async Task<ActionResult> GetById(int id)
+        {
+            var obj = await _business.FindByIdAsync(id);
+            return Ok(obj);
+        }
+
+        [HttpPost("schedulings/")]
         [SwaggerResponse(201, Type = typeof(Scheduling))]
         [SwaggerResponse(400)]
         [SwaggerResponse(401)]  
@@ -42,7 +54,7 @@ namespace Webapi.Controllers
             return new ObjectResult(await _business.InsertAsync(obj));
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("schedulings/{id}")]
         [SwaggerResponse(202, Type = typeof(Scheduling))]
         [SwaggerResponse(400)]
         [SwaggerResponse(401)] 

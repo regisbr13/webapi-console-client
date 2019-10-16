@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using Webapi.Business;
 using Webapi.Models;
 
@@ -21,10 +22,12 @@ namespace Webapi.Controllers
         }
 
         [HttpPost("Register")]
+        [SwaggerResponse(200)]
+        [SwaggerResponse(400)]
         [AllowAnonymous]
         public async Task<IActionResult> Register(User user) 
         {
-            if(await _business.FindUserByName(user.Login) == null) return BadRequest();
+            if(await _business.FindUserByName(user.Login) != null) return BadRequest("Usuário já cadastrado");
             var userInserted = await _business.InsertAsync(user);
             var claims = new List<Claim> { new Claim(ClaimTypes.NameIdentifier, user.Login)};
 
@@ -35,6 +38,9 @@ namespace Webapi.Controllers
         }
 
         [HttpPost("Login")]
+        [SwaggerResponse(200)]
+        [SwaggerResponse(400)]
+        [SwaggerResponse(401)]
         [AllowAnonymous]
         public async Task<IActionResult> Login(User user)
         {

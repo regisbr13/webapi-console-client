@@ -7,7 +7,7 @@ namespace Webapi.Models
     {
         public int Id { get; set; }
         public string Login { get; set; }
-        public string Senha { get; set; }
+        public string Password { get; set; }
         public List<Computer> Computers { get; set; }
     }
 }

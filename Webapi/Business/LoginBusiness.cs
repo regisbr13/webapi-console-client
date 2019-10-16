@@ -26,7 +26,7 @@ namespace Webapi.Business
         {
             var userBase = await FindUserByName(user.Login);
             if(userBase == null) return false;
-            if(userBase.Login == user.Login && userBase.Senha == user.Senha)
+            if(userBase.Login == user.Login && userBase.Password == user.Password)
                 return true;
             return false;
         }
