@@ -121,6 +121,7 @@ namespace Agent.Service
                 Console.WriteLine(response);
             }
             int computerId = int.Parse(response.Content.ReadAsStringAsync().Result);
+            Console.Clear();
             Console.WriteLine("Trabalhando...");
             await Run(computerId);
         } 

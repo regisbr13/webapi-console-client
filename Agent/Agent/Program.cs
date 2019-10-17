@@ -1,5 +1,6 @@
 ﻿using Agent.Helpers;
 using Agent.Service;
+using System;
 using System.Threading.Tasks;
 
 namespace Agent
@@ -12,7 +13,16 @@ namespace Agent
 
             var service = new SchedulingService(client);
 
-            await service.PostLogin();
+            try
+            {
+                await service.PostLogin();
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Ocorreu um erro: " + ex);
+                Console.ReadLine();
+            }
+
         }
     }
 }
