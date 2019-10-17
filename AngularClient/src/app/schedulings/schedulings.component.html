@@ -10,7 +10,7 @@
   <tbody *ngIf="schedulings">
     <tr *ngFor="let scheduling of schedulings">
       <td>{{scheduling.comand}}</td>
-      <td>{{scheduling.schedulingDate | date: 'd/MM/yyyy HH:mm'}}</td>
+      <td>{{scheduling.schedulingDate | date: 'dd/MM/yyyy HH:mm'}}</td>
       <td>
         <div class="btn-group">
             <button class="btn btn-sm btn-outline-info" tooltip="Deletar agendamento" (click)="deleteScheduling(delete, scheduling)"><i class="fas fa-trash-alt"></i></button>
@@ -30,6 +30,7 @@
     </tr>
   </tfoot>
 </table>
+<a [routerLink]="['/computers']" class="btn btn btn-primary" tooltip="Computadores">Voltar</a>
 
 <div bsModal #delete="bs-modal" class="modal fade" tabindex="-1"
 role="dialog" aria-labelledby="dialog-sizes-name1">

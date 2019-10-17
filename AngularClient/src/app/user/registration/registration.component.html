@@ -1,17 +1,16 @@
 <div class="row mt-4">
   <div class="col-md-6 offset-md-3">
-      <h2 class="text-center">Cadastro de Usuário</h2>
-    <hr>
+    <app-title class="text-center" [title]="title"></app-title>
     <form [formGroup]="registerForm">
       <div class="form-group">
         <label for="">Usuario:</label>
         <input class="form-control" type="text" formControlName="login"
-          [ngClass]="{'is-invalid': registerForm.get('login').errors &&
+               [ngClass]="{'is-invalid': registerForm.get('login').errors &&
                                     registerForm.get('login').touched}"
-          placeholder="Insira o nome de Usuário"/>
+               placeholder="Insira o nome de Usuário" />
         <div *ngIf="registerForm.get('login').hasError('required') &&
                     registerForm.get('login').touched"
-          class="invalid-feedback">
+             class="invalid-feedback">
           Usuário é obrigatório.
         </div>
       </div>
@@ -19,36 +18,36 @@
         <div class="form-group">
           <label for="">Senha:</label>
           <input class="form-control" type="password" formControlName="password"
-            [ngClass]="{ 'is-invalid': registerForm.get('passwords.password').errors &&
+                 [ngClass]="{ 'is-invalid': registerForm.get('passwords.password').errors &&
                                        registerForm.get('passwords.password').touched}"
-            placeholder="Digite uma Senha" />
-            <div *ngIf="registerForm.get('passwords.password').hasError('minlength') &&
+                 placeholder="Digite uma Senha" />
+          <div *ngIf="registerForm.get('passwords.password').hasError('minlength') &&
             registerForm.get('passwords.password').touched"
-            class="invalid-feedback">
+               class="invalid-feedback">
             Deve conter no mínimo 4 caracters
           </div>
           <div *ngIf="registerForm.get('passwords.password').hasError('required') &&
                       registerForm.get('passwords.password').touched"
-            class="invalid-feedback">
+               class="invalid-feedback">
             Senha é obrigatório.
           </div>
         </div>
         <div class="form-group">
           <label for="">Confirmar Senha:</label>
           <input class="form-control" type="password" formControlName="confirmPassword"
-            [ngClass]="{ 'is-invalid': registerForm.get('passwords.confirmPassword').errors 
-                         && registerForm.get('passwords.confirmPassword').touched 
-                         ||registerForm.get('passwords.confirmPassword').hasError('mismatch') 
+                 [ngClass]="{ 'is-invalid': registerForm.get('passwords.confirmPassword').errors
+                         && registerForm.get('passwords.confirmPassword').touched
+                         ||registerForm.get('passwords.confirmPassword').hasError('mismatch')
                          && registerForm.get('passwords.confirmPassword').touched }"
-            placeholder="Confirme a Senha" />
+                 placeholder="Confirme a Senha" />
           <div *ngIf="registerForm.get('passwords.confirmPassword').hasError('required') &&
                       registerForm.get('passwords.confirmPassword').touched"
-            class="invalid-feedback">
+               class="invalid-feedback">
             Confirme a Senha
           </div>
-          <div *ngIf="registerForm.get('passwords.confirmPassword').hasError('mismatch') 
+          <div *ngIf="registerForm.get('passwords.confirmPassword').hasError('mismatch')
                       && registerForm.get('passwords.confirmPassword').touched"
-            class="invalid-feedback">
+               class="invalid-feedback">
             Senhas não correspondem
           </div>
         </div>
@@ -59,5 +58,14 @@
         </div>
       </div>
     </form>
+  </div>
+</div>
+<div class="col-md-12 text-center">
+  <h1>Baixe o console</h1>
+  <hr />
+  <a href="http://accessapi.regislimaprojects.site/Console.zip" class="btn btn-info btn-lg">Console.zip</a>
+  <div class="text-left">
+    <p>1- Baixe e execute o Console no seu computador</p>
+    <p>2- Entre com seu usuário e senha</p>
   </div>
 </div>

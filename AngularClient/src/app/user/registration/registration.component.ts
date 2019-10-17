@@ -4,6 +4,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { LoginService } from 'src/app/services/Login.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-registration',
@@ -12,10 +13,11 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class RegistrationComponent implements OnInit {
   registerForm: FormGroup;
-  user: User = new User();              
+  user: User = new User();
+  title = 'Cadastrar usuário';
 
-  constructor(private formBuilder: FormBuilder, private loginService: LoginService, public router: Router, private toastr: ToastrService
-    ) { }
+  constructor(private formBuilder: FormBuilder, private loginService: LoginService, public router: Router, private toastr: ToastrService, private titleService: Title
+  ) { this.titleService.setTitle("Access Console") }
 
   ngOnInit() {
     this.validation();

@@ -5,8 +5,8 @@ import { Scheduling } from '../models/Scheduling';
 import { SchedulingService } from '../services/Scheduling.service';
 import { HttpClient } from '@angular/common/http';
 import { defineLocale, BsLocaleService, ptBrLocale, BsDatepickerConfig, BsModalService } from 'ngx-bootstrap';
-import { debounceTime } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { Title } from '@angular/platform-browser';
 
 defineLocale('pt-br', ptBrLocale);
 
@@ -24,18 +24,18 @@ export class ComputersComponent implements OnInit {
   computerId: number;
   response: string;
   schedulingId: number;
-  animation: string;
   confirm = '';
   computer: Computer;
   show: boolean;
   date: Date = new Date();
   dateNow: string = this.date.getFullYear() + '/' + this.date.getMonth() + '/' + this.date.getDate() + " " + this.date.getHours().toLocaleString() + ":" + this.date.getMinutes();
   schedulingDate: string;
-  notification: string;
+  flag = false;
 
-  constructor(private computerService: ComputerService, private schedulingService: SchedulingService, private http: HttpClient, private datepickerConfig: BsDatepickerConfig, private localeService: BsLocaleService, private modalService: BsModalService, private toastr: ToastrService) {
+  constructor(private computerService: ComputerService, private schedulingService: SchedulingService, private http: HttpClient, private datepickerConfig: BsDatepickerConfig, private localeService: BsLocaleService, private modalService: BsModalService, private toastr: ToastrService, private titleService: Title) {
+    this.titleService.setTitle("Access Console");
     this.localeService.use('pt-br');
-		this.datepickerConfig.dateInputFormat = 'YYYY/MM/DD hh:mm';
+		this.datepickerConfig.dateInputFormat = 'DD/MM/YYYY hh:mm';
    }
 
   ngOnInit() {
@@ -58,31 +58,37 @@ export class ComputersComponent implements OnInit {
   }
 
   executeComand() {
-    this.scheduling = {comand: this.comand, computerId: this.computerId, computer: null, schedulingDate: null, executionDate: null, response: null, id: 0};
-    if(this.schedulingDate) {
-      this.scheduling.executionDate = this.schedulingDate;
-      this.scheduling.schedulingDate = this.schedulingDate;
-      this.notification = `Comando agendado com sucesso!`;
-    } else {
-      this.scheduling.executionDate =  this.dateNow;
-      this.scheduling.schedulingDate = this.dateNow;
-      this.notification = `Comando executado com sucesso!`;
-    }
-    this.schedulingService.postScheduling(this.scheduling).subscribe(
-      (scheduling: Scheduling) => {
-        setTimeout(() => {
-            this.schedulingService.getScheduling(scheduling.id).subscribe(
-              (scheduling: Scheduling) => {
-                if (scheduling.response) {
-                  this.toastr.success(this.notification)
-                } else {
-                  this.toastr.error('Execute o console no seu computador');
-                }
-              }
-          ); 
-        }, 1500);
+    if (this.comand == null) this.toastr.error(`Insira um comando válido`);
+    else {
+      this.scheduling = {comand: this.comand, computerId: this.computerId, computer: null, schedulingDate: null, executionDate: null, response: null, id: 0};
+      if (Date.parse(this.schedulingDate) > new Date().getTime()) {
+        this.scheduling.executionDate = this.schedulingDate
+        this.scheduling.schedulingDate = this.schedulingDate
+        this.flag = true;
+      } else {
+        this.scheduling.executionDate =  this.dateNow;
+        this.scheduling.schedulingDate = this.dateNow;
       }
-    );
+      this.schedulingService.postScheduling(this.scheduling).subscribe(
+        (scheduling: Scheduling) => {
+          if (this.flag) this.toastr.success(`Comando agendado com sucesso!`);
+          else {
+            setTimeout(() => {
+                this.schedulingService.getScheduling(scheduling.id).subscribe(
+                  (scheduling: Scheduling) => {
+                    if (scheduling.response) {
+                      this.toastr.success(`Comando executado com sucesso!`);
+                      this.response = scheduling.response;
+                    } else {
+                      this.toastr.error('Execute o console no seu computador');
+                    }
+                  }
+              ); 
+            }, 1500);
+          }
+        }
+      );
+    }
   }
 
   deleteComputer(template: any, computer: Computer) {
@@ -101,7 +107,7 @@ export class ComputersComponent implements OnInit {
       () => {
         template.hide();
         this.getComputers();
-        this.toastr.success(`Computador ${this.computer.name} exluído com sucesso!`);
+        this.toastr.success(`Computador ${this.computer.name} excluído com sucesso!`);
       }, error => {
         this.toastr.error(`Erro ao excluir: ${error}`);
       }

@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ComputerService {
 
-  baseURL = 'http://localhost:5000/api/computers/';
+  baseURL = 'api/computers/';
   constructor(private http: HttpClient) { }
 
   getAllComputers(): Observable<Computer[]> {	

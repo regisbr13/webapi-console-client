@@ -1,49 +1,59 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ToastrModule } from 'ngx-toastr';
+import { HttpClientModule } from '@angular/common/http';
+import { RouterModule } from '@angular/router';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import {HttpClientModule} from '@angular/common/http';
 import { NavComponent } from './shared/nav/nav.component';
 import { LoginComponent } from './user/login/login.component';
-import { UserComponent } from './user/user.component';
-import { TitleComponent } from './shared/title/title.component';
 import { RegistrationComponent } from './user/registration/registration.component';
 import { ComputersComponent } from './computers/computers.component';
+import { TitleComponent } from './shared/title/title.component';
+import { UserComponent } from './user/user.component';
 import { SchedulingsComponent } from './schedulings/schedulings.component';
-import { BsDatepickerModule, ModalModule, TooltipModule } from 'ngx-bootstrap';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
+import { BsDatepickerModule, TooltipModule, ModalModule } from 'ngx-bootstrap';
 import { NgxNavbarModule } from 'ngx-bootstrap-navbar';
+import { AuthGuard } from './auth/auth.guard';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
-   declarations: [
-      AppComponent,
-      NavComponent,
-      LoginComponent,
-      UserComponent,
-      TitleComponent,
-      RegistrationComponent,
-      ComputersComponent,
-      SchedulingsComponent
-   ],
-   imports: [
-      BrowserModule,
-      AppRoutingModule,
-      HttpClientModule,
-      FormsModule,
-      ReactiveFormsModule,
-      ToastrModule.forRoot(),
-      BsDatepickerModule.forRoot(),
-      BrowserAnimationsModule,
-      NgxNavbarModule,
-      ModalModule.forRoot(),
-      TooltipModule.forRoot(),
-   ],
-   providers: [],
-   bootstrap: [
-      AppComponent
-   ]
+  declarations: [
+    AppComponent,
+    NavComponent,
+    LoginComponent,
+    UserComponent,
+    TitleComponent,
+    RegistrationComponent,
+    ComputersComponent,
+    SchedulingsComponent
+  ],
+  imports: [
+    BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
+    RouterModule.forRoot([
+      { path: 'computadores', component: ComputersComponent, canActivate: [AuthGuard]},
+      { path: 'schedulings/:computerId', component: SchedulingsComponent, canActivate: [AuthGuard]},
+      { path: 'comandos', component: SchedulingsComponent, canActivate: [AuthGuard] },
+  { path: 'user/login', component: LoginComponent },
+  { path: 'user/registration', component: RegistrationComponent },
+      { path: '', component: LoginComponent, pathMatch: 'full' },
+      { path: '**', component: LoginComponent, pathMatch: 'full' }
+    ]),
+    ToastrModule.forRoot({
+      progressBar: true
+    }),
+    BsDatepickerModule.forRoot(),
+    BrowserAnimationsModule,
+    NgxNavbarModule,
+    ModalModule.forRoot(),
+    TooltipModule.forRoot(),
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
 })
 export class AppModule { }

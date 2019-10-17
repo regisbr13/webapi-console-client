@@ -19,11 +19,9 @@
                 </a>
               </div>
             </li>
-            <div>
                 <button class="btn btn-danger"(click)="logout()">Logout</button>
-            </div>
       </ul>
-      <button *ngIf="!loggedIn()" class="btn btn-light" (click)="entrar()">Entrar</button> ||
+      <button *ngIf="!loggedIn()" class="btn btn-light" (click)="entrar()">Entrar</button> &nbsp;
       <button *ngIf="!loggedIn()" class="btn btn-light" (click)="registrar()">Registrar</button>
     </ngx-navbar-collapse>
     </div>

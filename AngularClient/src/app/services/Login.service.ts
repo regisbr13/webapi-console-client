@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 
 @Injectable({providedIn: 'root'})
 export class LoginService {
-    baseURL = 'http://localhost:5000/api/users/';
+    baseURL = 'api/users/';
     constructor(private http: HttpClient) { }
 
     login(user: User) {

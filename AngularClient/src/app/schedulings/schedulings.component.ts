@@ -4,6 +4,7 @@ import { SchedulingService } from '../services/Scheduling.service';
 import { ToastrService } from 'ngx-toastr';
 import { BsModalService } from 'ngx-bootstrap';
 import { ActivatedRoute } from '@angular/router';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-schedulings',
@@ -18,7 +19,7 @@ export class SchedulingsComponent implements OnInit {
   computerId: number;
   dateFormat = 'DD/MM/YYYY HH:mm';
 
-  constructor(private schedulingService: SchedulingService, private toastr: ToastrService, private modalService: BsModalService, private router: ActivatedRoute) { }
+  constructor(private schedulingService: SchedulingService, private toastr: ToastrService, private modalService: BsModalService, private router: ActivatedRoute, private titleService: Title) { this.titleService.setTitle("Access Console"); }
 
   ngOnInit() {
     this.getSchedulings(parseInt(this.router.snapshot.paramMap.get('computerId'), 10));

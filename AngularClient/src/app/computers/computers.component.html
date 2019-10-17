@@ -1,64 +1,64 @@
 <app-title [title]="title"></app-title>
-<table class="table table-striped table-hover">
-  <thead class="thead-dark">
-    <tr>
-      <th>Nome</th>
-      <th>Ip</th>
-      <th>S.O.</th>
-      <th>Usuário</th>
-      <th>Espaço em disco</th>
-      <th>Memória ram</th>
-      <th colspan="2" class="text-center">Opções</th>
-    </tr>
-  </thead>
-  <tbody *ngIf="computers">
-    <tr *ngFor="let computer of computers">
-      <td>{{computer.name}}</td>
-      <td>{{computer.ip}}</td>
-      <td>{{computer.os}}</td>
-      <td>{{computer.username}}</td>
-      <td>{{computer.diskSpace}}</td>
-      <td>{{computer.memoryInfo}}</td>
-      <td>
-        <div class="btn-group">
+<div class="table-responsive">
+  <table class="table table-striped table-hover">
+    <thead class="thead-dark">
+      <tr>
+        <th>Nome</th>
+        <th>Ip</th>
+        <th>S.O.</th>
+        <th>Usuário</th>
+        <th>HD</th>
+        <th>Memória ram</th>
+        <th colspan="2" class="text-center">Opções</th>
+      </tr>
+    </thead>
+    <tbody *ngIf="computers">
+      <tr *ngFor="let computer of computers">
+        <td>{{computer.name}}</td>
+        <td>{{computer.ip}}</td>
+        <td>{{computer.os}}</td>
+        <td>{{computer.username}}</td>
+        <td>{{computer.diskSpace}}</td>
+        <td>{{computer.memoryInfo}}</td>
+        <td>
+          <div class="btn-group">
             <button class="btn btn-sm btn-outline-info" tooltip="Deletar computador" (click)="deleteComputer(delete, computer)"><i class="fas fa-trash-alt"></i></button>
-          <button class="btn btn-sm btn-outline-info" tooltip="Mostrar terminal" (click)="showTerminal(computer.id)">Terminal</button>
-          <a [routerLink]="['/schedulings', computer.id]" class="btn btn-sm btn-outline-info" tooltip="Comandos agendados">Agendamentos</a>
-        </div>
-      </td>
-    </tr>
-    <tr>
-    </tr>
-  </tbody>
-  <tfoot>
-    <tr *ngIf="computers.length == 0">
-      <td colspan=8>
-        <h3 class="text-info text-center">
-          Nenhum computador cadastrado.
-        </h3>
-        <div class="text-left">
-        <p>1- Baixe e execute o Agente.exe no seu computador</p>
-        <p>2- Entre com seu usuário e senha</p>
-        <p>3- Recarregue a página</p>
-      </div>
-      </td>
-    </tr>
-  </tfoot>
-</table>
-<div class="col-md-8 offset-md-2" *ngIf="terminal">
-  <label class="form-label">Digite o comando</label>
-  <textarea class="form-control" [(ngModel)]="comand" rows="3" style="background-color: black;color: white;"></textarea>
-  <label class="form-label">Insira uma data de agendamento (opcional)</label>
-  <input class="form-control" bsDatepicker [(ngModel)]="schedulingDate" placeholder="{{dateNow}}">
-  <div style="margin-top:8px;">
-    <button class="btn btn-sm btn-success" tooltip="Executar/Agendar" (click)="executeComand()">Executar/Agendar</button>
+            <button class="btn btn-sm btn-outline-info" tooltip="Mostrar terminal" (click)="showTerminal(computer.id)">Terminal</button>
+            <a [routerLink]="['/schedulings', computer.id]" class="btn btn-sm btn-outline-info" tooltip="Comandos agendados">Agendamentos</a>
+          </div>
+        </td>
+      </tr>
+      <tr>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr *ngIf="computers.length == 0">
+        <td colspan=8>
+          <h3 class="text-info text-center">
+            Nenhum computador cadastrado.
+          </h3>
+          <div class="text-left">
+            <p>1- Baixe e execute o Console.exe no seu computador</p>
+            <p>2- Entre com seu usuário e senha</p>
+            <p>3- Recarregue a página</p>
+          </div>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+  <div class="col-md-8 offset-md-2" *ngIf="terminal">
+    <label class="form-label">Digite o comando</label>
+    <textarea class="form-control" [(ngModel)]="comand" rows="3" style="background-color: black;color: white;"></textarea>
+    <label class="form-label">Insira uma data de agendamento (opcional)</label>
+    <input class="form-control" bsDatepicker [(ngModel)]="schedulingDate" placeholder="Executar agora">
+    <div style="margin-top:8px;">
+      <button class="btn btn-sm btn-success" tooltip="Executar/Agendar" (click)="executeComand()">Executar/Agendar</button>
+    </div>
+    <hr>
+    <label class="form-label">Saída</label>
+    <textarea class="form-control" readonly rows="5" style="background-color: black;color: greenyellow;">{{response}}</textarea>
   </div>
-  <hr>
-  <label class="form-label">Saída</label>
-  <textarea *ngIf="show" class="form-control" readonly rows="5" style="background-color: black;color: greenyellow;text-decoration: blink;">{{animation}}</textarea>
-  <textarea class="form-control" readonly rows="5" style="background-color: black;color: greenyellow;">{{response}}</textarea>
 </div>
-
 
 <div bsModal #delete="bs-modal" class="modal fade" tabindex="-1"
 role="dialog" aria-labelledby="dialog-sizes-name1">
@@ -87,3 +87,4 @@ role="dialog" aria-labelledby="dialog-sizes-name1">
     </div>
   </div>
 </div>
+  </div>
