@@ -4,11 +4,11 @@ import { Computer } from '../models/Computer';
 import { Scheduling } from '../models/Scheduling';
 import { SchedulingService } from '../services/Scheduling.service';
 import { HttpClient } from '@angular/common/http';
-import { defineLocale, BsLocaleService, ptBrLocale, BsDatepickerConfig, BsModalService } from 'ngx-bootstrap';
+import { BsDatepickerConfig, BsModalService } from 'ngx-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { Title } from '@angular/platform-browser';
+import { DatePipe } from '@angular/common';
 
-defineLocale('pt-br', ptBrLocale);
 
 @Component({
   selector: 'app-computers',
@@ -32,9 +32,8 @@ export class ComputersComponent implements OnInit {
   schedulingDate: string;
   flag = false;
 
-  constructor(private computerService: ComputerService, private schedulingService: SchedulingService, private http: HttpClient, private datepickerConfig: BsDatepickerConfig, private localeService: BsLocaleService, private modalService: BsModalService, private toastr: ToastrService, private titleService: Title) {
+  constructor(private computerService: ComputerService, private schedulingService: SchedulingService, private http: HttpClient, private datepickerConfig: BsDatepickerConfig, private modalService: BsModalService, private toastr: ToastrService, private titleService: Title, public datepipe: DatePipe) {
     this.titleService.setTitle("Access Console");
-    this.localeService.use('pt-br');
 		this.datepickerConfig.dateInputFormat = 'DD/MM/YYYY hh:mm';
    }
 
@@ -58,12 +57,14 @@ export class ComputersComponent implements OnInit {
   }
 
   executeComand() {
-    if (this.comand == null) this.toastr.error(`Insira um comando válido`);
+    if (this.comand == null || this.comand == "") {
+      this.toastr.error(`Insira um comando válido`);
+    }
     else {
-      this.scheduling = {comand: this.comand, computerId: this.computerId, computer: null, schedulingDate: null, executionDate: null, response: null, id: 0};
+      this.scheduling = {comand: this.comand, computerId: this.computerId, schedulingDate: null, executionDate: null, response: null, id: 0};
       if (Date.parse(this.schedulingDate) > new Date().getTime()) {
-        this.scheduling.executionDate = this.schedulingDate
-        this.scheduling.schedulingDate = this.schedulingDate
+        this.scheduling.executionDate = this.datepipe.transform(this.schedulingDate, 'yyyy-MM-dd HH:mm', 'UTC -3')
+        this.scheduling.schedulingDate = this.datepipe.transform(this.schedulingDate, 'yyyy-MM-dd HH:mm', 'UTC -3')
         this.flag = true;
       } else {
         this.scheduling.executionDate =  this.dateNow;
@@ -76,8 +77,9 @@ export class ComputersComponent implements OnInit {
             setTimeout(() => {
                 this.schedulingService.getScheduling(scheduling.id).subscribe(
                   (scheduling: Scheduling) => {
-                    if (scheduling.response) {
+                    if (scheduling) {
                       this.toastr.success(`Comando executado com sucesso!`);
+                      console.log(scheduling);
                       this.response = scheduling.response;
                     } else {
                       this.toastr.error('Execute o console no seu computador');
@@ -86,6 +88,8 @@ export class ComputersComponent implements OnInit {
               ); 
             }, 1500);
           }
+        },  error => {
+          this.toastr.error(`Insira um comando válido`);
         }
       );
     }

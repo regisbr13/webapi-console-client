@@ -4,23 +4,22 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using Webapi.Interfaces.Business;
+using Webapi.Business.Interfaces;
 using Webapi.Models;
+using Webapi.Data.VO;
 
-namespace Webapi.Controllers
-{
-    [Route("api/[controller]")]
+namespace Webapi.Controllers {
+    [Route ("api/[controller]")]
     [ApiController]
-    public class ComputersController : ControllerBase
-    {
-         private readonly IBusiness<Computer> _business;
+    public class ComputersController : ControllerBase {
+         private readonly IComputerBusiness _business;
 
-        public ComputersController(IBusiness<Computer> business) {
+        public ComputersController(IComputerBusiness business) {
             _business = business;
         }
 
         [HttpGet("{userId}")]
-        [SwaggerResponse(200, Type = typeof(List<Computer>))]
+        [SwaggerResponse(200, Type = typeof(List<ComputerVO>))]
         [SwaggerResponse(204)]
         [SwaggerResponse(400)]
         [SwaggerResponse(401)]        
@@ -28,7 +27,7 @@ namespace Webapi.Controllers
         {
             var obj = await _business.FindAllAsync(userId);
             if(obj == null)
-                return Ok(new List<Computer>());
+                return Ok(new List<ComputerVO>());
             return Ok(obj);
         }
 
@@ -36,24 +35,12 @@ namespace Webapi.Controllers
         [SwaggerResponse(201, Type = typeof(Computer))]
         [SwaggerResponse(400)]
         [SwaggerResponse(401)]  
-        public async Task<IActionResult> Post([FromBody] Computer obj)
+        public async Task<IActionResult> Post([FromBody] ComputerVO obj)
         {
             if(obj == null) return BadRequest();
             obj.Ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
             var computer = await _business.InsertAsync(obj);
             return Ok(computer.Id);
-        }
-
-        [HttpPut("{id}")]
-        [SwaggerResponse(202, Type = typeof(Computer))]
-        [SwaggerResponse(400)]
-        [SwaggerResponse(401)]  
-        public async Task<IActionResult> Put([FromBody] Computer obj)
-        {
-            if(obj == null) return BadRequest();
-            var updatedobj = await _business.UpdateAsync(obj);
-            if(updatedobj == null) return BadRequest("Computer doesn't exist in database");
-            return new ObjectResult(await _business.UpdateAsync(obj));
         }
 
         [HttpDelete("{id}")]

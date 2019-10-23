@@ -1,7 +1,5 @@
-namespace Access.Models
-{
-    public class BaseEntity
-    {
+namespace Access.Models {
+    public class BaseEntity {
         public int Id { get; set; }
     }
 }

@@ -4,23 +4,24 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Webapi.Business;
-using Webapi.Interfaces.Business;
+using Webapi.Business.Interfaces;
 using Webapi.Models;
+using Webapi.Data.VO;
 
-namespace Webapi.Controllers
-{
-    [Route("api/schedulings/")]
+namespace Webapi.Controllers {
+    [Route ("api/schedulings/")]
     [ApiController]
-    public class SchedulingsController : Controller
+    public class SchedulingsController : Controller 
     {
-         private readonly SchedulingBusiness _business;
+         private readonly ISchedulingBusiness _business;
 
-        public SchedulingsController(SchedulingBusiness business) {
+        public SchedulingsController(ISchedulingBusiness business) 
+        {
             _business = business;
         }
 
         [HttpGet("{computerId}")]
-        [SwaggerResponse(200, Type = typeof(List<Scheduling>))]
+        [SwaggerResponse(200, Type = typeof(List<SchedulingVO>))]
         [SwaggerResponse(204)]
         [SwaggerResponse(400)]
         [SwaggerResponse(401)]
@@ -45,7 +46,7 @@ namespace Webapi.Controllers
         [SwaggerResponse(201, Type = typeof(Scheduling))]
         [SwaggerResponse(400)]
         [SwaggerResponse(401)]  
-        public async Task<IActionResult> Post([FromBody] Scheduling obj)
+        public async Task<IActionResult> Post([FromBody] SchedulingVO obj)
         {
             if(obj == null)
                 return BadRequest();
@@ -56,7 +57,7 @@ namespace Webapi.Controllers
         [SwaggerResponse(202, Type = typeof(Scheduling))]
         [SwaggerResponse(400)]
         [SwaggerResponse(401)] 
-        public async Task<IActionResult> Put([FromBody] Scheduling obj)
+        public async Task<IActionResult> Put([FromBody] SchedulingVO obj)
         {
             if(obj == null) return BadRequest();
             var updatedobj = await _business.UpdateAsync(obj);

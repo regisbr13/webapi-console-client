@@ -9,59 +9,53 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using Webapi.Business;
 using Webapi.Models;
 
-namespace Webapi.Controllers
-{
-    [Route("api/[controller]")]
+namespace Webapi.Controllers {
+    [Route ("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
-    {
-         private readonly LoginBusiness _business;
+    public class UsersController : ControllerBase {
+        private readonly LoginBusiness _business;
 
-        public UsersController(LoginBusiness business) {
+        public UsersController (LoginBusiness business) {
             _business = business;
         }
 
-        [HttpPost("Register")]
-        [SwaggerResponse(200)]
-        [SwaggerResponse(400)]
+        [HttpPost ("Register")]
+        [SwaggerResponse (200)]
+        [SwaggerResponse (400)]
         [AllowAnonymous]
-        public async Task<IActionResult> Register(User user) 
-        {
-            if(await _business.FindUserByName(user.Login) != null) return BadRequest("Usuário já cadastrado");
-            var userInserted = await _business.InsertAsync(user);
-            var claims = new List<Claim> { new Claim(ClaimTypes.NameIdentifier, user.Login)};
+        public async Task<IActionResult> Register (User user) {
+            if (await _business.FindUserByName (user.Login) != null) return BadRequest ("Usuário já cadastrado");
+            var userInserted = await _business.InsertAsync (user);
+            var claims = new List<Claim> { new Claim (ClaimTypes.NameIdentifier, user.Login) };
 
-            var userIdentity = new ClaimsIdentity(claims, "login");
-            ClaimsPrincipal principal = new ClaimsPrincipal(userIdentity);
-            await HttpContext.SignInAsync(principal);
-            return Ok();
+            var userIdentity = new ClaimsIdentity (claims, "login");
+            ClaimsPrincipal principal = new ClaimsPrincipal (userIdentity);
+            await HttpContext.SignInAsync (principal);
+            return Ok ();
         }
 
-        [HttpPost("Login")]
-        [SwaggerResponse(200)]
-        [SwaggerResponse(400)]
-        [SwaggerResponse(401)]
+        [HttpPost ("Login")]
+        [SwaggerResponse (200)]
+        [SwaggerResponse (400)]
+        [SwaggerResponse (401)]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(User user)
-        {
-            if(await _business.CheckLogin(user))
-            {
-                var claims = new List<Claim>() {new Claim(ClaimTypes.NameIdentifier, user.Login)};
-                var userIdentity = new ClaimsIdentity(claims, "login");
-                ClaimsPrincipal principal = new ClaimsPrincipal(userIdentity);					
-                await HttpContext.SignInAsync(principal);
-                var userId = (await _business.FindUserByName(user.Login)).Id;								
-                return Ok(userId);
+        public async Task<IActionResult> Login (User user) {
+            if (await _business.CheckLogin (user)) {
+                var claims = new List<Claim> () { new Claim (ClaimTypes.NameIdentifier, user.Login) };
+                var userIdentity = new ClaimsIdentity (claims, "login");
+                ClaimsPrincipal principal = new ClaimsPrincipal (userIdentity);
+                await HttpContext.SignInAsync (principal);
+                var userId = (await _business.FindUserByName (user.Login)).Id;
+                return Ok (userId);
             }
-            return Unauthorized();
+            return Unauthorized ();
         }
 
-        [HttpGet("Logout")]
-        public async Task<IActionResult> Logout()
-        {
-            await HttpContext.SignOutAsync();
-            HttpContext.Session.Clear();		
-            return Ok();
+        [HttpGet ("Logout")]
+        public async Task<IActionResult> Logout () {
+            await HttpContext.SignOutAsync ();
+            HttpContext.Session.Clear ();
+            return Ok ();
         }
     }
 }

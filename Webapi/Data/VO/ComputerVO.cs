@@ -1,8 +1,8 @@
-using System.Collections.Generic;
-using Access.Models;
-
-namespace Webapi.Models {
-    public class Computer : BaseEntity {
+namespace Webapi.Data.VO 
+{
+    public class ComputerVO 
+    {
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Ip { get; set; }
         public string OS { get; set; }
@@ -10,7 +10,5 @@ namespace Webapi.Models {
         public string DiskSpace { get; set; }
         public string MemoryInfo { get; set; }
         public int UserId { get; set; }
-        public User User { get; set; }
-        public List<Scheduling> Schedulings { get; set; }
     }
 }

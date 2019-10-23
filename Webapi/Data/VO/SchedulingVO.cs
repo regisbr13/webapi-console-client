@@ -1,8 +1,13 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
-namespace Agent.Models {
-    public class Scheduling {
+namespace Webapi.Data.VO 
+{
+    public class SchedulingVO 
+    {
         public int Id { get; set; }
+
+        [Required]
         public string Comand { get; set; }
         public string Response { get; set; }
         public DateTime ExecutionDate { get; set; }

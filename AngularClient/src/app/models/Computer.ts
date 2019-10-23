@@ -1,6 +1,3 @@
-import { User } from './User';
-import { Scheduling } from './Scheduling';
-
 export interface Computer {
     id: number,
     name: string;
@@ -9,7 +6,5 @@ export interface Computer {
     username: string;
     diskSpace: string;
     memoryInfo: string;
-    userId: string;
-    user: User;
-    schedulings: Scheduling[];
+    userId: number
 }

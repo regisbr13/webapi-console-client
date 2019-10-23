@@ -1,10 +1,12 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Webapi.Models;
 
-namespace Webapi.Repository.Interfaces
+namespace Webapi.Repository.Interfaces 
 {
-    public interface IComputerRepository : IRepository<Computer>
+    public interface IComputerRepository : IRepository<Computer> 
     {
-         Task<Computer> FindUserByName(string name);
+        Task<Computer> FindUserByName (string name);
+        Task<List<Computer>> FindAllAsync (int userId);
     }
 }

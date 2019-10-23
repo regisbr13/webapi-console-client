@@ -1,59 +1,47 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Webapi.Interfaces.Business;
+using Webapi.Business.Interfaces;
+using Webapi.Data.VO;
+using Webapi.Data.VO.Converters;
 using Webapi.Models;
 using Webapi.Repository.Interfaces;
 
-namespace Webapi.Business
+namespace Webapi.Business 
 {
-    public class SchedulingBusiness : IBusiness<Scheduling>
+    public class SchedulingBusiness : ISchedulingBusiness 
     {
-        private readonly IRepository<Scheduling> _repository;
+        private readonly ISchedulingRepository _repository;
+        private readonly SchedulingConverter _converter;
 
-        public SchedulingBusiness(IRepository<Scheduling> repository)
-        {
+        public SchedulingBusiness (ISchedulingRepository repository, SchedulingConverter converter) {
             _repository = repository;
-        }
-        public async Task<bool> ExistsAsync(Scheduling entity)
-        {
-            return await _repository.ExistsAsync(entity);
+            _converter = converter;
         }
 
-        public async Task<List<Scheduling>> FindAllAsync()
-        {
-            return await _repository.FindAllAsync();
+        public async Task<List<SchedulingVO>> FindAllAsync () {
+            return _converter.ParseList (await _repository.FindAllAsync ());
         }
 
-        public async Task<List<Scheduling>> FindAllAsync(int computerId)
-        {
-            return (await _repository.FindAllAsync()).Where(x => x.ComputerId == computerId && string.IsNullOrEmpty(x.Response)).ToList();
+        public async Task<List<SchedulingVO>> FindAllAsync (int computerId) {
+            var list = await _repository.FindAllAsync (computerId);
+            return _converter.ParseList (list);
         }
 
-        public async Task<List<Scheduling>> FindAllNotExecutedAsync()
-        {
-            var list = await _repository.FindAllAsync();
-            return list.Where(x => x.Response == null).ToList();
+        public async Task<SchedulingVO> FindByIdAsync (int id) {
+            return _converter.Parse (await _repository.FindByIdAsync (id));
         }
 
-        public async Task<Scheduling> FindByIdAsync(int id)
-        {
-            return await _repository.FindByIdAsync(id);
+        public async Task<Scheduling> InsertAsync (SchedulingVO entity) {
+            return await _repository.InsertAsync (_converter.Parse (entity));
         }
 
-        public async Task<Scheduling> InsertAsync(Scheduling entity)
-        {
-            return await _repository.InsertAsync(entity);
+        public async Task RemoveAsync (int id) {
+            await _repository.RemoveAsync (id);
         }
 
-        public async Task RemoveAsync(int id)
-        {
-            await _repository.RemoveAsync(id);
-        }
-
-        public async Task<Scheduling> UpdateAsync(Scheduling entity)
-        {
-            return await _repository.UpdateAsync(entity);
+        public async Task<Scheduling> UpdateAsync (SchedulingVO entity) {
+            return await _repository.UpdateAsync (_converter.Parse (entity));
         }
     }
 }

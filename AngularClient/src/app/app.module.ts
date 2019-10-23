@@ -53,7 +53,7 @@ import { DatePipe } from '@angular/common';
     ModalModule.forRoot(),
     TooltipModule.forRoot(),
   ],
-  providers: [],
+  providers: [DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
