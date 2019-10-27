@@ -1,29 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
 using Webapi.Business;
 using Webapi.Data;
 using Webapi.Business.Interfaces;
-using Webapi.Models;
 using Webapi.Repository;
 using Webapi.Repository.Interfaces;
 using Webapi.Data.VO.Converters;
+using Tapioca.HATEOAS;
+using Webapi.Hypermedia;
 
-namespace Webapi {
+namespace Webapi
+{
     public class Startup {
         public Startup (IConfiguration configuration) {
             Configuration = configuration;
@@ -59,6 +56,11 @@ namespace Webapi {
                 x.SwaggerDoc("v1", new Info { Title = "Access Console Api", Version = "v1" });
                 x.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
             });
+
+            var filterOptions = new HyperMediaFilterOptions();
+            filterOptions.ObjectContentResponseEnricherList.Add(new SchedulingEnricher());
+            filterOptions.ObjectContentResponseEnricherList.Add(new ComputerEnricher());
+            services.AddSingleton(filterOptions);
 
             services.AddCors();
         }
